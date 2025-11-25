@@ -47,14 +47,13 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        trust: {
-          blue: "hsl(var(--trust-blue))",
+        pastel: {
+          green: "hsl(var(--pastel-green))",
+          mint: "hsl(var(--pastel-mint))",
+          sage: "hsl(var(--pastel-sage))",
         },
-        warm: {
-          amber: "hsl(var(--warm-amber))",
-        },
-        sage: {
-          green: "hsl(var(--sage-green))",
+        soft: {
+          lime: "hsl(var(--soft-lime))",
         },
         neutral: {
           50: "hsl(var(--neutral-50))",

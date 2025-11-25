@@ -28,6 +28,33 @@ const Shop = () => {
     return categories.filter(cat => cat.parentId === parentId);
   };
 
+  const getAllDescendantSlugs = (categoryId: string): string[] => {
+    const category = categories.find(cat => cat.id === categoryId);
+    if (!category) return [];
+    
+    const slugs = [category.slug];
+    const children = getSubcategories(categoryId);
+    
+    children.forEach(child => {
+      slugs.push(...getAllDescendantSlugs(child.id));
+    });
+    
+    return slugs;
+  };
+
+  const handleCategoryChange = (categorySlug: string, checked: boolean) => {
+    const category = categories.find(cat => cat.slug === categorySlug);
+    if (!category) return;
+
+    const descendantSlugs = getAllDescendantSlugs(category.id);
+    
+    if (checked) {
+      setSelectedCategories(prev => [...new Set([...prev, ...descendantSlugs])]);
+    } else {
+      setSelectedCategories(prev => prev.filter(slug => !descendantSlugs.includes(slug)));
+    }
+  };
+
   const filteredProducts = selectedCategories.length > 0
     ? mockProducts.filter(p => 
         selectedCategories.includes(p.category) || 
@@ -96,13 +123,7 @@ const Shop = () => {
                             <Checkbox
                               id={category.slug}
                               checked={selectedCategories.includes(category.slug)}
-                              onCheckedChange={(checked) => {
-                                setSelectedCategories(
-                                  checked
-                                    ? [...selectedCategories, category.slug]
-                                    : selectedCategories.filter(c => c !== category.slug)
-                                );
-                              }}
+                              onCheckedChange={(checked) => handleCategoryChange(category.slug, checked as boolean)}
                             />
                             <Label
                               htmlFor={category.slug}
@@ -139,13 +160,7 @@ const Shop = () => {
                                       <Checkbox
                                         id={subcat.slug}
                                         checked={selectedCategories.includes(subcat.slug)}
-                                        onCheckedChange={(checked) => {
-                                          setSelectedCategories(
-                                            checked
-                                              ? [...selectedCategories, subcat.slug]
-                                              : selectedCategories.filter(c => c !== subcat.slug)
-                                          );
-                                        }}
+                                        onCheckedChange={(checked) => handleCategoryChange(subcat.slug, checked as boolean)}
                                       />
                                       <Label
                                         htmlFor={subcat.slug}
@@ -164,13 +179,7 @@ const Shop = () => {
                                             <Checkbox
                                               id={subsubcat.slug}
                                               checked={selectedCategories.includes(subsubcat.slug)}
-                                              onCheckedChange={(checked) => {
-                                                setSelectedCategories(
-                                                  checked
-                                                    ? [...selectedCategories, subsubcat.slug]
-                                                    : selectedCategories.filter(c => c !== subsubcat.slug)
-                                                );
-                                              }}
+                                              onCheckedChange={(checked) => handleCategoryChange(subsubcat.slug, checked as boolean)}
                                             />
                                             <Label
                                               htmlFor={subsubcat.slug}
